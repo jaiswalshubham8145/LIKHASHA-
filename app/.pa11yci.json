@@ -1,0 +1,27 @@
+{
+  "defaults": {
+    "standard": "WCAG2AA",
+    "runners": ["axe", "htmlcs"],
+    "ignore": [
+      "color-contrast"  // handled in dedicated test with theming
+    ]
+  },
+  "urls": [
+    {
+      "url": "http://localhost:3100/",
+      "actions": ["wait for element body to be added"]
+    },
+    {
+      "url": "http://localhost:3100/login",
+      "actions": ["wait for element #email to be added"]
+    },
+    {
+      "url": "http://localhost:3100/signup",
+      "actions": ["wait for element #name to be added"]
+    },
+    {
+      "url": "http://localhost:3100/dashboard",
+      "actions": ["wait for element [data-testid='kpi-mrr'] to be added"]
+    }
+  ]
+}

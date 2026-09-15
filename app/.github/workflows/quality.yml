@@ -1,0 +1,163 @@
+name: Quality
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'app/**'
+      - 'tests/**'
+      - 'package.json'
+      - 'lighthouserc.json'
+      - '.size-limit.json'
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: 22
+  PNPM_VERSION: 9
+
+jobs:
+  accessibility:
+    name: Accessibility (axe + pa11y)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: ${{ env.PNPM_VERSION }} }
+      - uses: actions/setup-node@v4
+        with: { node-version: ${{ env.NODE_VERSION }}, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build:test
+      - run: pnpm start:test &
+      - run: sleep 5
+      - run: pnpm test:a11y
+      - run: pnpm exec pa11y-ci --config .pa11yci.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: a11y-report, path: reports/a11y/ }
+
+  lighthouse:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: ${{ env.PNPM_VERSION }} }
+      - uses: actions/setup-node@v4
+        with: { node-version: ${{ env.NODE_VERSION }}, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build:test
+      - run: pnpm start:test &
+      - run: sleep 5
+      - name: Run LHCI
+        run: npx --yes @lhci/cli@0.14.x autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: lighthouse, path: .lighthouseci/ }
+
+  visual:
+    name: Visual regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: ${{ env.PNPM_VERSION }} }
+      - uses: actions/setup-node@v4
+        with: { node-version: ${{ env.NODE_VERSION }}, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm build:test
+      - run: pnpm start:test &
+      - run: sleep 5
+      - run: pnpm test:visual
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: visual-report, path: tests/visual/baselines/ }
+
+  security:
+    name: Security scans
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: ${{ env.PNPM_VERSION }} }
+      - uses: actions/setup-node@v4
+        with: { node-version: ${{ env.NODE_VERSION }}, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm audit --prod --audit-level=high
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: OSV scanner
+        uses: google/osv-scanner-action@v2
+        with:
+          scan-args: --lockfile=pnpm-lock.yaml
+      - name: Headers test
+        run: pnpm test:security
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: security-report, path: reports/security/ }
+
+  bundle:
+    name: Bundle size budget
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: ${{ env.PNPM_VERSION }} }
+      - uses: actions/setup-node@v4
+        with: { node-version: ${{ env.NODE_VERSION }}, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build:test
+      - run: pnpm size
+      - uses: andresz1/size-limit-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          unit_to_compare: main
+
+  reliability:
+    name: Reliability (offline, timeout, retry)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: ${{ env.PNPM_VERSION }} }
+      - uses: actions/setup-node@v4
+        with: { node-version: ${{ env.NODE_VERSION }}, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm build:test
+      - run: pnpm start:test &
+      - run: sleep 5
+      - run: pnpm test:reliability
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: reliability-report, path: playwright-report/ }
+
+  summary:
+    name: Quality Summary
+    needs: [accessibility, lighthouse, visual, security, bundle, reliability]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check
+        run: |
+          results=("${{ needs.accessibility.result }}" "${{ needs.lighthouse.result }}" "${{ needs.visual.result }}" "${{ needs.security.result }}" "${{ needs.bundle.result }}" "${{ needs.reliability.result }}")
+          for r in "${results[@]}"; do
+            if [ "$r" != "success" ]; then
+              echo "::error::Quality check failed: $r"
+              exit 1
+            fi
+          done
+          echo "All quality checks passed"

@@ -1,0 +1,118 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: 22
+  PNPM_VERSION: 9
+
+jobs:
+  lint-typecheck:
+    name: Lint + Typecheck + Format
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: ${{ env.PNPM_VERSION }} }
+      - uses: actions/setup-node@v4
+        with: { node-version: ${{ env.NODE_VERSION }}, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm format:check
+      - run: pnpm secrets:scan
+
+  unit-component:
+    name: Unit + Component tests
+    needs: lint-typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: ${{ env.PNPM_VERSION }} }
+      - uses: actions/setup-node@v4
+        with: { node-version: ${{ env.NODE_VERSION }}, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:unit -- --reporter=default --reporter=junit --outputFile.junit=./coverage/junit-unit.xml
+      - name: Coverage thresholds
+        run: pnpm test:coverage:check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-unit
+          path: coverage/
+
+  integration:
+    name: Integration tests
+    needs: lint-typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: ${{ env.PNPM_VERSION }} }
+      - uses: actions/setup-node@v4
+        with: { node-version: ${{ env.NODE_VERSION }}, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:integration -- --reporter=junit --outputFile.junit=./coverage/junit-integration.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: coverage-integration, path: coverage/ }
+
+  build:
+    name: Build
+    needs: lint-typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: ${{ env.PNPM_VERSION }} }
+      - uses: actions/setup-node@v4
+        with: { node-version: ${{ env.NODE_VERSION }}, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build:test
+      - uses: actions/upload-artifact@v4
+        with: { name: build, path: .next/ }
+
+  e2e-smoke:
+    name: E2E smoke (chromium + firefox)
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: ${{ env.PNPM_VERSION }} }
+      - uses: actions/setup-node@v4
+        with: { node-version: ${{ env.NODE_VERSION }}, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium firefox
+      - run: pnpm test:e2e:smoke
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: playwright-report, path: playwright-report/ }
+
+  quality-gate:
+    name: Quality Gate
+    needs: [unit-component, integration, e2e-smoke]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Decide
+        run: |
+          if [[ "${{ needs.unit-component.result }}" != "success" || \
+                "${{ needs.integration.result }}" != "success" || \
+                "${{ needs.e2e-smoke.result }}" != "success" ]]; then
+            echo "Quality gate failed"
+            exit 1
+          fi
+          echo "Quality gate passed"

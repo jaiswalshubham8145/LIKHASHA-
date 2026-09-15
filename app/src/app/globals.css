@@ -1,0 +1,99 @@
+/* ============================================================================
+   Lumen — Design Tokens
+   Light / Dark / High-Contrast themes via [data-theme]
+   WCAG 2.2 AA baseline; AAA for body text where practical
+   ========================================================================== */
+
+@layer base {
+  :root,
+  [data-theme='light'] {
+    --bg: 0 0% 100%;
+    --fg: 222 47% 11%;
+    --muted: 215 16% 65%;
+    --border: 215 20% 88%;
+    --ring: 221 83% 53%;
+
+    --brand-50: 214 100% 97%;
+    --brand-100: 214 95% 93%;
+    --brand-200: 213 97% 87%;
+    --brand-300: 212 96% 78%;
+    --brand-400: 213 94% 68%;
+    --brand-500: 217 91% 60%;
+    --brand-600: 221 83% 53%;
+    --brand-700: 224 76% 48%;
+    --brand-800: 226 71% 40%;
+    --brand-900: 224 64% 33%;
+
+    --success: 142 71% 38%;
+    --warning: 38 92% 50%;
+    --danger: 0 84% 50%;
+    --info: 199 89% 48%;
+
+    --radius: 8px;
+    --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  }
+
+  [data-theme='dark'] {
+    --bg: 222 47% 7%;
+    --fg: 210 40% 98%;
+    --muted: 215 16% 55%;
+    --border: 215 25% 18%;
+    --ring: 217 91% 60%;
+
+    --brand-50: 224 64% 12%;
+    --brand-100: 224 64% 16%;
+    --brand-200: 224 60% 22%;
+    --brand-300: 217 70% 35%;
+    --brand-400: 217 85% 55%;
+    --brand-500: 217 91% 65%;
+    --brand-600: 217 95% 70%;
+    --brand-700: 217 95% 75%;
+    --brand-800: 217 95% 82%;
+    --brand-900: 217 95% 90%;
+
+    --success: 142 71% 55%;
+    --warning: 38 92% 60%;
+    --danger: 0 84% 60%;
+    --info: 199 89% 60%;
+  }
+
+  [data-theme='high-contrast'] {
+    --bg: 0 0% 0%;
+    --fg: 0 0% 100%;
+    --muted: 0 0% 80%;
+    --border: 0 0% 100%;
+    --ring: 60 100% 50%;
+
+    --brand-500: 60 100% 50%;
+    --brand-600: 60 100% 60%;
+
+    --success: 120 100% 50%;
+    --warning: 40 100% 55%;
+    --danger: 0 100% 60%;
+    --info: 200 100% 60%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  html { color-scheme: light dark; }
+  body {
+    @apply bg-bg text-fg antialiased;
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+  }
+  :focus-visible { @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-bg; }
+  ::selection { background: hsl(var(--brand-300) / 0.4); }
+}

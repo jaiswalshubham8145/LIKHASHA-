@@ -1,0 +1,9 @@
+# code owners
+* @lumen/frontend-platform
+
+/src/components/ui/      @lumen/design-system
+/src/lib/design-system/  @lumen/design-system
+/tests/                  @lumen/quality
+/lighthouserc.json       @lumen/quality @lumen/performance
+/.github/workflows/      @lumen/devx
+/package.json            @lumen/frontend-platform

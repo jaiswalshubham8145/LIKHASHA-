@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Initial JS (landing)",
+    "path": ".next/static/chunks/main-app.js",
+    "limit": "180 KB",
+    "ignore": ["react", "react-dom"]
+  },
+  {
+    "name": "Initial JS (dashboard)",
+    "path": ".next/static/chunks/main-app.js",
+    "limit": "220 KB",
+    "ignore": ["react", "react-dom"]
+  },
+  {
+    "name": "Total CSS",
+    "path": ".next/static/css/app.css",
+    "limit": "30 KB"
+  }
+]
