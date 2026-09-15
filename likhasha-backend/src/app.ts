@@ -72,7 +72,16 @@ export const generateLimiter = rateLimit({
   message: { error: 'Too many generation requests. Please wait a moment.' },
 });
 
-// Health check
+// Root and health checks
+app.get('/', (_req, res) => {
+  res.status(200).json({
+    status: 'online',
+    name: 'Likhasha API',
+    version: '2.0.0',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.get('/health', (_req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
