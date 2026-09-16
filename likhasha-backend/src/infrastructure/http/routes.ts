@@ -7,7 +7,8 @@ import { handleRazorpayWebhook } from './controllers/webhook.controller';
 import { getLanguages } from './controllers/languages.controller';
 import { requireAuth } from './middlewares/auth.middleware';
 import { checkGenerationLimit } from './middlewares/planCheck.middleware';
-import { generateLimiter } from '../../app';
+import { generateLimiter } from './middlewares/rateLimiter.middleware';
+
 
 const router = Router();
 

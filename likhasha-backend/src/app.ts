@@ -4,7 +4,6 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
-import rateLimit from 'express-rate-limit';
 import { v4 as uuidv4 } from 'uuid';
 import { errorHandler } from './infrastructure/http/middlewares/error.middleware';
 import { env } from './config/env.config';
@@ -53,24 +52,9 @@ if (env.NODE_ENV !== 'test') {
   app.use(morgan('combined'));
 }
 
-// Global Rate Limiting
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 100,
-  standardHeaders: 'draft-7',
-  legacyHeaders: false,
-  message: { error: 'Too many requests. Please try again later.' },
-});
+import { globalLimiter } from './infrastructure/http/middlewares/rateLimiter.middleware';
 app.use('/api', globalLimiter);
 
-// Stricter rate limit for AI generation endpoint — exported so routes.ts can apply it inline
-export const generateLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  limit: 10,
-  standardHeaders: 'draft-7',
-  legacyHeaders: false,
-  message: { error: 'Too many generation requests. Please wait a moment.' },
-});
 
 // Root and health checks
 app.get('/', (_req, res) => {
