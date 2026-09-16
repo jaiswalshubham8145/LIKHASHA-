@@ -31,3 +31,5 @@ pnpm-debug.log*
 
 # Antigravity agent files
 .agent/
+.lovable/
+
