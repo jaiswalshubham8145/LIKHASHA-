@@ -2,9 +2,9 @@
   "name": "likhasha-backend",
   "version": "1.0.0",
   "description": "Enterprise-grade Backend for Likhasha Platform",
-  "main": "dist/src/server.js",
+  "main": "dist/server.js",
   "scripts": {
-    "start": "node dist/src/server.js",
+    "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
     "build": "tsc",
     "lint": "eslint . --ext .ts",

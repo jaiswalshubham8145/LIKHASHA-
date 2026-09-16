@@ -3,7 +3,14 @@ import { env } from '../../config/env.config';
 import { logger } from '../../config/logger.config';
 import { AppError } from '../../domain/errors';
 
-const genAI = new GoogleGenerativeAI(env.GOOGLE_API_KEY);
+let genAIInstance: GoogleGenerativeAI | null = null;
+function getGenAI(): GoogleGenerativeAI {
+  if (!genAIInstance) {
+    genAIInstance = new GoogleGenerativeAI(env.GOOGLE_API_KEY || 'missing_key');
+  }
+  return genAIInstance;
+}
+
 
 // ─── Language metadata ───
 const LANG_NAMES: Record<string, string> = {
@@ -483,7 +490,7 @@ export class GeminiService {
       try {
         logger.info(`🤖 Generating with model: ${modelName} [Type: ${type}, Lang: ${language}]`);
 
-        const model = genAI.getGenerativeModel({
+        const model = getGenAI().getGenerativeModel({
           model: modelName,
           generationConfig: {
             maxOutputTokens: type === 'ghazal' || type === 'marsiya' ? 500 : 300,

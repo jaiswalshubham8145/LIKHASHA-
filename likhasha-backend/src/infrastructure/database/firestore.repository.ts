@@ -32,8 +32,13 @@ export interface GenerationDoc {
 }
 
 export class FirestoreRepository {
-  private usersCollection = db.collection('users');
-  private generationsCollection = db.collection('generations');
+  private get usersCollection() {
+    return db.collection('users');
+  }
+  private get generationsCollection() {
+    return db.collection('generations');
+  }
+
 
   async getUser(uid: string): Promise<UserDoc | null> {
     const doc = await this.usersCollection.doc(uid).get();
