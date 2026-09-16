@@ -8,21 +8,21 @@ const envSchema = z.object({
   PORT: z.string().default('8080'),
 
   // Firebase
-  FIREBASE_PROJECT_ID: z.string(),
-  FIREBASE_PRIVATE_KEY: z.string(),
-  FIREBASE_CLIENT_EMAIL: z.string(),
+  FIREBASE_PROJECT_ID: z.string().default(''),
+  FIREBASE_PRIVATE_KEY: z.string().default(''),
+  FIREBASE_CLIENT_EMAIL: z.string().default(''),
 
   // Google Gemini API
-  GOOGLE_API_KEY: z.string(),
+  GOOGLE_API_KEY: z.string().default(''),
 
   // Razorpay
-  RAZORPAY_KEY_ID: z.string(),
-  RAZORPAY_KEY_SECRET: z.string(),
-  RAZORPAY_WEBHOOK_SECRET: z.string(),
+  RAZORPAY_KEY_ID: z.string().default(''),
+  RAZORPAY_KEY_SECRET: z.string().default(''),
+  RAZORPAY_WEBHOOK_SECRET: z.string().default(''),
   RAZORPAY_PLAN_ID: z.string().default(''),
 
   // Resend
-  RESEND_API_KEY: z.string().optional(),
+  RESEND_API_KEY: z.string().optional().default(''),
 
   // App constraints
   FREE_TIER_DAILY_LIMIT: z.coerce.number().default(5),
@@ -31,8 +31,8 @@ const envSchema = z.object({
 const _env = envSchema.safeParse(process.env);
 
 if (!_env.success) {
-  console.error('❌ Invalid environment variables:', _env.error.format());
-  process.exit(1);
+  console.warn('⚠️ Environment variable parsing warnings:', _env.error.format());
 }
 
-export const env = _env.data;
+export const env = _env.success ? _env.data : envSchema.parse(process.env || {});
+

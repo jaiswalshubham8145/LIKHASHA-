@@ -13,8 +13,30 @@ const router = Router();
 
 // ─── Public routes ───────────────────────────────────────────────────────────
 
+// Root API status
+router.get('/', (_req, res) => {
+  res.status(200).json({
+    status: 'online',
+    name: 'Likhasha API',
+    version: '2.0.0',
+    timestamp: new Date().toISOString(),
+    endpoints: [
+      '/api/languages',
+      '/api/generate',
+      '/api/library',
+      '/api/user/me',
+      '/api/subscribe'
+    ]
+  });
+});
+
+router.get('/health', (_req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // Static metadata
 router.get('/languages', getLanguages);
+
 
 // Razorpay webhook (raw body parsing handled by express.json already since we
 // parse the signature from the stringified body; keep as JSON route)

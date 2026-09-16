@@ -86,9 +86,10 @@ app.get('/health', (_req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Mount all API routes
+// Mount all API routes under both /api and root to handle any Vercel rewrite configuration
 import routes from './infrastructure/http/routes';
 app.use('/api', routes);
+app.use('/', routes);
 
 // Centralized Error Handling
 app.use(errorHandler);

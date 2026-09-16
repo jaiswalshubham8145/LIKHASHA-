@@ -4,15 +4,27 @@ import { logger } from '../../config/logger.config';
 import { AppError } from '../../domain/errors';
 import crypto from 'crypto';
 
-const razorpay = new Razorpay({
-  key_id: env.RAZORPAY_KEY_ID,
-  key_secret: env.RAZORPAY_KEY_SECRET,
-});
+let razorpayInstance: Razorpay | null = null;
+
+function getRazorpay(): Razorpay {
+  if (!razorpayInstance) {
+    if (!env.RAZORPAY_KEY_ID || !env.RAZORPAY_KEY_SECRET) {
+      throw new AppError('Razorpay credentials are not configured on the server', 503, 'PAYMENT_CONFIG_MISSING');
+    }
+    razorpayInstance = new Razorpay({
+      key_id: env.RAZORPAY_KEY_ID,
+      key_secret: env.RAZORPAY_KEY_SECRET,
+    });
+  }
+  return razorpayInstance;
+}
 
 export class RazorpayService {
   static async createSubscription(uid: string): Promise<any> {
     try {
+      const razorpay = getRazorpay();
       // In a real app, we would have created a plan beforehand and use its plan_id
+
       // For this example, assuming a predefined plan ID from config or constant
       const plan_id = process.env.RAZORPAY_PLAN_ID || 'plan_default_99'; 
 
@@ -38,6 +50,10 @@ export class RazorpayService {
   }
 
   static verifyWebhookSignature(body: string, signature: string): boolean {
+    if (!env.RAZORPAY_WEBHOOK_SECRET) {
+      logger.warn('RAZORPAY_WEBHOOK_SECRET is not configured');
+      return false;
+    }
     const expectedSignature = crypto
       .createHmac('sha256', env.RAZORPAY_WEBHOOK_SECRET)
       .update(body)
