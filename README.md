@@ -40,6 +40,8 @@ Likhasha/
 - **AI Core**: Google Gemini API (`@google/genai`)
 - **Database**: Firebase Admin / Cloud Firestore
 - **Payments**: Razorpay Node SDK (Subscription API + Webhook signature verification)
+- **Live Production API**: [https://likhasha-backend.vercel.app](https://likhasha-backend.vercel.app)
+
 
 ---
 
