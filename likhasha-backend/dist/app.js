@@ -9,7 +9,7 @@ const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const compression_1 = __importDefault(require("compression"));
 const morgan_1 = __importDefault(require("morgan"));
-const uuid_1 = require("uuid");
+const crypto_1 = __importDefault(require("crypto"));
 const error_middleware_1 = require("./infrastructure/http/middlewares/error.middleware");
 const env_config_1 = require("./config/env.config");
 const app = (0, express_1.default)();
@@ -42,7 +42,7 @@ app.use(express_1.default.json({ limit: '1mb' }));
 app.use(express_1.default.urlencoded({ extended: true, limit: '1mb' }));
 // Request ID middleware for tracing
 app.use((req, _res, next) => {
-    req.id = req.headers['x-request-id'] || (0, uuid_1.v4)();
+    req.id = req.headers['x-request-id'] || crypto_1.default.randomUUID();
     next();
 });
 // Logging

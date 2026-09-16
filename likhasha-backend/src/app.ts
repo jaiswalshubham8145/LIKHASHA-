@@ -4,7 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
-import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 import { errorHandler } from './infrastructure/http/middlewares/error.middleware';
 import { env } from './config/env.config';
 
@@ -43,7 +43,7 @@ app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 // Request ID middleware for tracing
 app.use((req: RequestWithId, _res: Response, next: NextFunction) => {
-  req.id = req.headers['x-request-id'] as string || uuidv4();
+  req.id = req.headers['x-request-id'] as string || crypto.randomUUID();
   next();
 });
 
