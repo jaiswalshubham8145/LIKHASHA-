@@ -3,6 +3,7 @@
 The modern, cinematic web client for Likhasha AI poetry generator.
 
 ## 🛠️ Tech Stack
+
 - **TanStack Start** (SSR & File-based Routing)
 - **React 19**
 - **Tailwind CSS v4** + Custom Obsidian/Gold Glassmorphic System

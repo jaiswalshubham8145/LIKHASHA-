@@ -9,6 +9,14 @@
  * All colors are oklch tokens. Never hardcode colors in components.
  */
 
+@font-face {
+  font-family: "Bageki Luxury Demo";
+  src: url("/fonts/BagekiLuxuryDemo-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -70,9 +78,10 @@
   --color-sidebar-border: var(--border);
   --color-sidebar-ring: var(--ring);
 
-  --font-display: "Cormorant Garamond", Georgia, serif;
-  --font-heading: "Marcellus", Georgia, serif;
-  --font-monument: "Cinzel Decorative", "Cinzel", Georgia, serif;
+  --font-display: "Bageki Luxury Demo", "Cormorant Garamond", Georgia, serif;
+  --font-heading: "Bageki Luxury Demo", "Marcellus", Georgia, serif;
+  --font-monument:
+    "Bageki Luxury Demo", "Cinzel Decorative", "Cinzel", Georgia, serif;
   --font-sans: "Manrope", system-ui, sans-serif;
   --font-sanskrit: "Cormorant Garamond", Georgia, serif;
   --font-hindi: "Cormorant Garamond", Georgia, serif;

@@ -1,20 +1,25 @@
 import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
-import tsConfigPaths from "vite-tsconfig-paths";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import react from "@vitejs/plugin-react";
 import { nitro } from "nitro/vite";
 
 export default defineConfig(({ command }) => ({
+  resolve: {
+    tsconfigPaths: true,
+  },
   plugins: [
     tailwindcss(),
-    tsConfigPaths({ projects: ["./tsconfig.json"] }),
     tanstackStart({
       server: { entry: "server" },
     }),
+    react(),
     ...(command === "build"
       ? [
           nitro({
-            defaultPreset: process.env['VERCEL'] ? "vercel" : "cloudflare-module",
+            defaultPreset: process.env["VERCEL"]
+              ? "vercel"
+              : "cloudflare-module",
           }),
         ]
       : []),
