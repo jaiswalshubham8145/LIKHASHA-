@@ -8,114 +8,114 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as GenerateRouteImport } from './routes/generate'
-import { Route as LibraryRouteImport } from './routes/library'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as GenerateRouteImport } from "./routes/generate";
+import { Route as LibraryRouteImport } from "./routes/library";
+import { Route as LoginRouteImport } from "./routes/login";
+import { Route as PricingRouteImport } from "./routes/pricing";
 
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const GenerateRoute = GenerateRouteImport.update({
-  id: '/generate',
-  path: '/generate',
+  id: "/generate",
+  path: "/generate",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const LibraryRoute = LibraryRouteImport.update({
-  id: '/library',
-  path: '/library',
+  id: "/library",
+  path: "/library",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+  id: "/login",
+  path: "/login",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
+  id: "/pricing",
+  path: "/pricing",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/generate': typeof GenerateRoute
-  '/library': typeof LibraryRoute
-  '/login': typeof LoginRoute
-  '/pricing': typeof PricingRoute
+  "/": typeof IndexRoute;
+  "/generate": typeof GenerateRoute;
+  "/library": typeof LibraryRoute;
+  "/login": typeof LoginRoute;
+  "/pricing": typeof PricingRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/generate': typeof GenerateRoute
-  '/library': typeof LibraryRoute
-  '/login': typeof LoginRoute
-  '/pricing': typeof PricingRoute
+  "/": typeof IndexRoute;
+  "/generate": typeof GenerateRoute;
+  "/library": typeof LibraryRoute;
+  "/login": typeof LoginRoute;
+  "/pricing": typeof PricingRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/generate': typeof GenerateRoute
-  '/library': typeof LibraryRoute
-  '/login': typeof LoginRoute
-  '/pricing': typeof PricingRoute
+  __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
+  "/generate": typeof GenerateRoute;
+  "/library": typeof LibraryRoute;
+  "/login": typeof LoginRoute;
+  "/pricing": typeof PricingRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/generate' | '/library' | '/login' | '/pricing'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/generate' | '/library' | '/login' | '/pricing'
-  id: '__root__' | '/' | '/generate' | '/library' | '/login' | '/pricing'
-  fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths: "/" | "/generate" | "/library" | "/login" | "/pricing";
+  fileRoutesByTo: FileRoutesByTo;
+  to: "/" | "/generate" | "/library" | "/login" | "/pricing";
+  id: "__root__" | "/" | "/generate" | "/library" | "/login" | "/pricing";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  GenerateRoute: typeof GenerateRoute
-  LibraryRoute: typeof LibraryRoute
-  LoginRoute: typeof LoginRoute
-  PricingRoute: typeof PricingRoute
+  IndexRoute: typeof IndexRoute;
+  GenerateRoute: typeof GenerateRoute;
+  LibraryRoute: typeof LibraryRoute;
+  LoginRoute: typeof LoginRoute;
+  PricingRoute: typeof PricingRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/generate': {
-      id: '/generate'
-      path: '/generate'
-      fullPath: '/generate'
-      preLoaderRoute: typeof GenerateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/library': {
-      id: '/library'
-      path: '/library'
-      fullPath: '/library'
-      preLoaderRoute: typeof LibraryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/generate": {
+      id: "/generate";
+      path: "/generate";
+      fullPath: "/generate";
+      preLoaderRoute: typeof GenerateRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/library": {
+      id: "/library";
+      path: "/library";
+      fullPath: "/library";
+      preLoaderRoute: typeof LibraryRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/login": {
+      id: "/login";
+      path: "/login";
+      fullPath: "/login";
+      preLoaderRoute: typeof LoginRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/pricing": {
+      id: "/pricing";
+      path: "/pricing";
+      fullPath: "/pricing";
+      preLoaderRoute: typeof PricingRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
@@ -125,17 +125,17 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryRoute: LibraryRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
+import type { getRouter } from "./router.tsx";
+import type { startInstance } from "./start.ts";
+declare module "@tanstack/react-start" {
   interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+    ssr: true;
+    router: Awaited<ReturnType<typeof getRouter>>;
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>;
   }
 }

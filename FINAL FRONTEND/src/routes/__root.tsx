@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 import { Toaster } from "sonner";
 
 function NotFoundComponent() {
@@ -122,13 +123,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       ],
-      scripts: [
-        {
-          src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8155188382113677",
-          async: true,
-          crossOrigin: "anonymous",
-        },
-      ],
+      scripts: [],
     }),
 
     shellComponent: RootShell,
@@ -152,12 +147,28 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function AdSenseManager() {
+  const { profile, loading } = useAuth();
+  const clientId = import.meta.env.VITE_GOOGLE_ADSENSE_CLIENT_ID;
+
+  if (loading || !clientId || profile?.plan === "premium") return null;
+
+  return (
+    <script
+      async
+      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`}
+      crossOrigin="anonymous"
+    />
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <AdSenseManager />
         <Outlet />
         <Toaster richColors position="bottom-right" />
       </AuthProvider>
