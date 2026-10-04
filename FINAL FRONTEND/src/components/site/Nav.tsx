@@ -46,9 +46,9 @@ export function Nav() {
       >
         <Link
           to="/"
-          className="font-monument text-sm tracking-[0.42em] text-white"
+          className="flex items-center"
         >
-          LIKHASHA
+          <img src="/logo.png" alt="Likhasha Logo" className="h-8 w-auto object-contain" />
         </Link>
 
         <div className="hidden items-center gap-9 md:flex">
