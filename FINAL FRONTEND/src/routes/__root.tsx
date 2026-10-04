@@ -149,7 +149,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function AdSenseManager() {
   const { profile, loading } = useAuth();
-  const clientId = import.meta.env.VITE_GOOGLE_ADSENSE_CLIENT_ID;
+  const clientId = import.meta.env["VITE_GOOGLE_ADSENSE_CLIENT_ID"];
 
   if (loading || !clientId || profile?.plan === "premium") return null;
 
